@@ -42,7 +42,7 @@ func (self BaseNode) GetLeft() INode { return self.left }
 func (self BaseNode) GetRight() INode { return self.right }
 
 func (self BaseNode) Print() {
-  var loop func(node INode, indent string)
+  var loop func(node INode, last_indent string)
   loop = func(node INode, last_indent string) {
     indent := last_indent
 
@@ -58,7 +58,7 @@ func (self BaseNode) Print() {
         node.GetOperation().Print()
 
         fmt.Print(indent)
-        loop(node.GetRight(), indent)
+        loop(node.GetValue(), indent)
 
         fmt.Printf("%s}\n", last_indent)
 
