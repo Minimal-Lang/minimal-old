@@ -74,7 +74,7 @@ func test_node(assert *assert.Assertions, current, expected node.INode) {
       expr := current.GetValue()
       op := current.GetOperation()
 
-      exp_expr := expected.GetLeft()
+      exp_expr := expected.GetValue()
       exp_op := expected.GetOperation()
 
       test_node(assert, expr, exp_expr)
