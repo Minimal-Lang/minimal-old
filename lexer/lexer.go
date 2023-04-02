@@ -7,11 +7,12 @@ import (
   "minimal/lexer/token"
   . "minimal/utils"
 	. "minimal/diagnostics"
+  . "minimal/text"
 )
 
 
 type Lexer struct {
-  source []rune
+  source SourceText
   current rune
 
   position int
@@ -22,7 +23,7 @@ type Lexer struct {
 
 func NewLexer(content string) *Lexer {
   return &Lexer {
-    source: []rune(content),
+    source: NewSourceText(content),
     diagnostics: NewDiagnosticBag(),
   }
 }
@@ -32,18 +33,18 @@ func (self Lexer) GetDiagnostics() []Diagnostic { return self.diagnostics.GetDia
 
 
 func (self Lexer) peek() rune {
-  if self.next_position >= len(self.source) {
+  if self.next_position >= len(self.source.String()) {
     return '\x00'
   }
 
-  return self.source[self.next_position]
+  return []rune(self.source.StringFromBounds(self.next_position, 1))[0]
 }
 
 func (self *Lexer) next() rune {
-  if self.next_position >= len(self.source) {
+  if self.next_position >= len(self.source.String()) {
     self.current = '\x00'
   } else {
-    self.current = self.source[self.next_position]
+    self.current = []rune(self.source.StringFromBounds(self.next_position, 1))[0]
   }
 
   self.position = self.next_position

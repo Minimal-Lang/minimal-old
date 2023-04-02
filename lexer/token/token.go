@@ -17,7 +17,7 @@ type Token struct {
 }
 
 func New(kind TokenKind, literal string, position int) Token {
-  length := len([]rune(literal))
+  length := len(literal)
 
   return Token {
     kind,

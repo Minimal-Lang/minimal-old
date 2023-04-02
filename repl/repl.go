@@ -6,9 +6,10 @@ import (
 	"os"
 	"strings"
 
-	. "minimal/lexer"
 	"minimal/lexer/token"
+	. "minimal/lexer"
 	. "minimal/parser"
+  . "minimal/text"
 )
 
 
@@ -69,6 +70,7 @@ func main() {
 
     text_builder.WriteString(input)
     text := text_builder.String()
+    source_text := NewSourceText(text)
 
     lex := NewLexer(text)
     current := token.New(token.Number, "12", 0)
@@ -90,7 +92,7 @@ func main() {
 
     if show_tokens {
       for _, token := range tokens {
-        fmt.Println(token)
+        token.Print()
       }
 
       fmt.Println()
@@ -103,13 +105,20 @@ func main() {
 
     if len(diagnostics) > 0 {
       for _, diag := range diagnostics {
+        lineIndex := source_text.GetLineIndex(diag.GetSpan().GetStart())
+        lineNumber := lineIndex + 1
+        line := source_text.Lines[lineIndex]
+        char_position := diag.GetSpan().GetStart() - line.GetStart() + 1
+
         fmt.Println()
+        fmt.Printf(" \033[31m( line: %d, position: %d ): %s\033[0m\n", lineNumber, char_position, diag.GetMessage())
 
-        fmt.Printf("\033[31m%s\033[0m\n", diag.GetMessage())
+        prefixSpan := NewTextSpan_FromBounds(line.GetStart(), diag.GetSpan().GetStart())
+        suffixSpan := NewTextSpan_FromBounds(diag.GetSpan().GetEnd(), line.GetEnd())
 
-        prefix := text[:diag.GetSpan().GetStart()]
-        err    := text[diag.GetSpan().GetStart():diag.GetSpan().GetEnd()]
-        suffix := text[diag.GetSpan().GetEnd():diag.GetSpan().GetEnd() + len(input) - diag.GetSpan().GetEnd()]
+        prefix := source_text.StringFromSpan(prefixSpan)
+        suffix := source_text.StringFromSpan(suffixSpan)
+        err := source_text.StringFromSpan(diag.GetSpan())
 
         fmt.Printf("  ╰─ %s\033[31m%s\033[0m%s\n", prefix, err, suffix)
       }
