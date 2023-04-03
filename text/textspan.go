@@ -15,6 +15,14 @@ func NewTextSpan(start, length int) TextSpan {
   }
 }
 
+func NewTextSpan_FromBounds(start, end int) TextSpan {
+  return TextSpan {
+    start,
+    end - start,
+    end,
+  }
+}
+
 
 func (self TextSpan) GetStart() int { return self.start }
 func (self TextSpan) GetLength() int { return self.length }
