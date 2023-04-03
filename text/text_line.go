@@ -28,8 +28,6 @@ func NewTextLine(text SourceText, start, length, lengthIncludingLineBreak int) T
 }
 
 
-func (self TextLine) GetText() SourceText { return self.text }
-
 func (self TextLine) GetStart() int { return self.start }
 func (self TextLine) GetLength() int { return self.length }
 func (self TextLine) GetLengthIncludingLineBreak() int { return self.lengthIncludingLineBreak }
