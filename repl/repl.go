@@ -121,6 +121,7 @@ func main() {
         err := source_text.StringFromSpan(diag.GetSpan())
 
         fmt.Printf("  ╰─ %s\033[31m%s\033[0m%s\n", prefix, err, suffix)
+        fmt.Println()
       }
     }
 
