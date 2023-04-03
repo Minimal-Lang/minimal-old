@@ -42,9 +42,7 @@ func (self *SourceText) GetLineIndex(position int) int {
 
 func (self *SourceText) parseLines() []TextLine {
   var res []TextLine
-
-  position := 0
-  lineStart := 0
+  var position, lineStart int
 
   for position < len(self.text) {
     lineBreakLength := self.getLineBreakLength(position)
@@ -75,11 +73,9 @@ func (self SourceText) addLine(res *[]TextLine, position, lineStart, lineBreakLe
 
 func (self *SourceText) getLineBreakLength(position int) int {
   char := self.text[position]
-  var lookahead rune
+  lookahead := '\x00'
 
-  if position + 1 >= len(self.text) {
-    lookahead = '\x00'
-  } else {
+  if position + 1 < len(self.text) {
     lookahead = self.text[position + 1]
   }
 
