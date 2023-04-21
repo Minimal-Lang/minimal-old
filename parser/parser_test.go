@@ -5,8 +5,8 @@ import (
 
 	. "minimal/diagnostics"
 	. "minimal/lexer"
-	"minimal/lexer/token"
-	"minimal/parser/node"
+	"minimal/types/token"
+	"minimal/types/node"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -60,30 +60,34 @@ func TestTokens(t *testing.T) {
 }
 
 func test_node(assert *assert.Assertions, current, expected node.INode) {
-  switch current.GetKind() {
-    case node.Literal:
-      val := current.GetToken()
-      exp_val := expected.GetToken()
+  switch current := current.(type) {
+    case node.LiteralExpression:
+      val := current.GetExpression()
+      expected, _ := expected.(node.LiteralExpression)
+
+      exp_val := expected.GetExpression()
 
       assert.Equal(exp_val.GetKind(), val.GetKind())
       assert.Equal(exp_val.GetLiteral(), val.GetLiteral())
       assert.Equal(expected.GetPosition(), current.GetPosition())
       assert.Equal(expected.GetLength(), current.GetLength())
 
-    case node.Unary:
-      expr := current.GetValue()
+    case node.UnaryExpression:
+      expr := current.GetExpression()
       op := current.GetOperation()
+      expected, _ := expected.(node.UnaryExpression)
 
-      exp_expr := expected.GetValue()
+      exp_expr := expected.GetExpression()
       exp_op := expected.GetOperation()
 
       test_node(assert, expr, exp_expr)
       assert.Equal(exp_op.GetKind(), op.GetKind())
 
-    case node.Binary:
+    case node.BinaryExpression:
       left := current.GetLeft()
       op := current.GetOperation()
       right := current.GetRight()
+      expected, _ := expected.(node.BinaryExpression)
 
       exp_left := expected.GetLeft()
       exp_op := expected.GetOperation()

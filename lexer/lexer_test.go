@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	. "minimal/diagnostics"
-	"minimal/lexer/token"
+	"minimal/types/token"
 	"github.com/stretchr/testify/assert"
 )
 
