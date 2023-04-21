@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"minimal/lexer/token"
+	"minimal/types/token"
 	. "minimal/lexer"
 	. "minimal/parser"
   . "minimal/text"

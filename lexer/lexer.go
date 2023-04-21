@@ -4,7 +4,7 @@ import (
 	"unicode"
   "strings"
 
-  "minimal/lexer/token"
+  "minimal/types/token"
   . "minimal/utils"
 	. "minimal/diagnostics"
   . "minimal/text"

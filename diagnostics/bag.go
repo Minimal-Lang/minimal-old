@@ -2,7 +2,7 @@ package diagnostics
 
 import (
   "fmt"
-  "minimal/lexer/token"
+  "minimal/types/token"
   . "minimal/text"
 )
 

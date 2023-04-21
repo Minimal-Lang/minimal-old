@@ -2,8 +2,8 @@ package parser
 
 import (
 	. "minimal/diagnostics"
-	"minimal/lexer/token"
-	. "minimal/parser/node"
+	"minimal/types/token"
+	"minimal/types/node"
 )
 
 
@@ -52,18 +52,18 @@ func (self *Parser) match(kind token.TokenKind) token.Token {
   return token.New(kind, "", current.GetPosition())
 }
 
-func (self *Parser) Parse() INode { return self.binary(0) }
+func (self *Parser) Parse() node.INode { return self.binary(0) }
 
-func (self *Parser) binary(parent_precedence uint8) INode {
+func (self *Parser) binary(parent_precedence uint8) node.INode {
   unary_op_prece := self.get_current().GetUnaryOperatorPrecetence()
 
-  var left INode
+  var left node.INode
 
   if unary_op_prece != 0 && unary_op_prece >= parent_precedence {
     op := self.next()
     operand := self.binary(unary_op_prece)
 
-    left = NewUnary(op, operand)
+    left = node.NewUnary(op, operand)
   } else {
     left = self.primary()
   }
@@ -77,13 +77,13 @@ func (self *Parser) binary(parent_precedence uint8) INode {
     op := self.next()
     right := self.binary(prece)
 
-    left = NewBinary(left, op, right)
+    left = node.NewBinary(left, op, right)
   }
 
   return left
 }
 
-func (self *Parser) primary() INode {
+func (self *Parser) primary() node.INode {
   if self.get_current().GetKind() == token.OpenParentheses {
     self.next()
     expr := self.binary(0)
@@ -92,5 +92,5 @@ func (self *Parser) primary() INode {
     return expr
   }
 
-  return NewLiteral(self.match(token.Number))
+  return node.NewLiteral(self.match(token.Number))
 }
