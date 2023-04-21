@@ -6,10 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"minimal/types/token"
 	. "minimal/lexer"
 	. "minimal/parser"
-  . "minimal/text"
+	. "minimal/text"
+	"minimal/types/node"
+	"minimal/types/token"
 )
 
 
@@ -82,7 +83,7 @@ func main() {
     }
 
     par := NewParser(tokens)
-    par.Parse()
+    ast := par.Parse()
 
     if !is_blank && len(par.GetDiagnostics()) > 0 {
       continue
@@ -99,7 +100,7 @@ func main() {
     }
 
     if show_ast {
-      // ast.Print()
+      printAST(ast, "", true)
       fmt.Println()
     }
 
@@ -126,5 +127,57 @@ func main() {
     }
 
     text_builder.Reset()
+  }
+}
+
+func printAST(item interface {}, indent string, isLast bool) {
+  var marker string
+  if isLast { marker = "╰─ " } else { marker = "├─ " }
+
+  fmt.Print("\033[90m" + indent + marker)
+
+  var kind string
+  if tok, isTk := item.(token.Token); isTk {
+    kind = string(tok.GetKind())
+  } else if node, isNode := item.(node.INode); isNode {
+    kind = string(node.GetKind())
+  }
+
+  fmt.Print("\033[34m" + kind)
+  fmt.Print("\033[0m")
+
+  if tok, isTk := item.(token.Token); isTk {
+    fmt.Print(": ")
+    fmt.Print("\033[33m" + tok.GetLiteral())
+    fmt.Print("\033[0m")
+  }
+
+  fmt.Println()
+
+  if item, isNode := item.(node.INode); isNode {
+    if isLast {
+      indent += "   "
+    } else {
+      indent += "│  "
+    }
+
+    var children []interface {}
+
+    if item, isLiteral := item.(node.LiteralExpression); isLiteral {
+      children = append(children, item.GetExpression())
+    }
+    if item, isUnary := item.(node.UnaryExpression); isUnary {
+      children = append(children, item.GetOperation())
+      children = append(children, item.GetExpression())
+    }
+    if item, isBinary := item.(node.BinaryExpression); isBinary {
+      children = append(children, item.GetLeft())
+      children = append(children, item.GetOperation())
+      children = append(children, item.GetRight())
+    }
+
+    for i, child := range children {
+      printAST(child, indent, i == len(children) - 1)
+    }
   }
 }
