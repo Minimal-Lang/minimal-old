@@ -9,8 +9,6 @@ type INode interface {
   GetPosition() int
   GetLength() int
 
-  Print()
-
   /* For literals */
   GetToken() token.Token
 

@@ -82,7 +82,7 @@ func main() {
     }
 
     par := NewParser(tokens)
-    ast := par.Parse()
+    par.Parse()
 
     if !is_blank && len(par.GetDiagnostics()) > 0 {
       continue
@@ -99,7 +99,7 @@ func main() {
     }
 
     if show_ast {
-      ast.Print()
+      // ast.Print()
       fmt.Println()
     }
 
