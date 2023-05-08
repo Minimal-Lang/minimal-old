@@ -7,9 +7,7 @@ type SourceText struct {
 }
 
 func NewSourceText(text string) SourceText {
-  self := SourceText {
-
-  }
+  self := SourceText {}
 
   self.text = []rune(text)
   self.Lines = self.parseLines()
