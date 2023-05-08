@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"io/ioutil"
 
 	. "minimal/lexer"
 	. "minimal/parser"
@@ -66,6 +67,13 @@ func main() {
         fmt.Printf("  ☠️ %s%s parse trees.\033[0m\n", color, state)
 
         continue
+      } else if strings.HasPrefix(input, "#file ") {
+        path := input[6:]
+        text, _ := ioutil.ReadFile(path)
+
+        input = string(text)
+      } else if input == "#code" {
+        input = "1 +\na -\n2 /\n1"
       }
     }
 
@@ -105,24 +113,9 @@ func main() {
     }
 
     if len(diagnostics) > 0 {
+      fmt.Println()
       for _, diag := range diagnostics {
-        lineIndex := source_text.GetLineIndex(diag.GetSpan().GetStart())
-        lineNumber := lineIndex + 1
-        line := source_text.Lines[lineIndex]
-        char_position := diag.GetSpan().GetStart() - line.GetStart() + 1
-
-        fmt.Println()
-        fmt.Printf(" \033[31m( line: %d, position: %d ): %s\033[0m\n", lineNumber, char_position, diag.GetMessage())
-
-        prefixSpan := NewTextSpan_FromBounds(line.GetStart(), diag.GetSpan().GetStart())
-        suffixSpan := NewTextSpan_FromBounds(diag.GetSpan().GetEnd(), line.GetEnd())
-
-        prefix := source_text.StringFromSpan(prefixSpan)
-        suffix := source_text.StringFromSpan(suffixSpan)
-        err := source_text.StringFromSpan(diag.GetSpan())
-
-        fmt.Printf("  ╰─ %s\033[31m%s\033[0m%s\n", prefix, err, suffix)
-        fmt.Println()
+        diag.PrintDiagnostic(source_text)
       }
     }
 
