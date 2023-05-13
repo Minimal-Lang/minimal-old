@@ -82,12 +82,13 @@ func main() {
     source_text := NewSourceText(text)
 
     lex := NewLexer(text)
-    current := token.New(token.Number, "12", 0)
     var tokens []token.Token
 
-    for current.GetKind() != token.EOF {
-      current = lex.Lex()
+    for {
+      current := lex.Lex()
       tokens = append(tokens, current)
+
+      if current.GetKind() == token.EOF { break }
     }
 
     par := NewParser(tokens)
@@ -115,7 +116,7 @@ func main() {
     if len(diagnostics) > 0 {
       fmt.Println()
       for _, diag := range diagnostics {
-        diag.PrintDiagnostic(source_text)
+        diag.PrintDiagnostic(source_text, tokens)
       }
     }
 
